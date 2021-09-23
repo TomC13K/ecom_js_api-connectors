@@ -12,27 +12,39 @@ const ENV = {
 };
 
 async function getToken() {
+
+  const url = `${ENV.authUrl}/oauth/token`;
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    params: {
+      grant_type: "client_credentials",
+    },
+    auth: {
+      username: ENV.clientId,
+      password: ENV.clientSecret,
+    },
+  };
+
+  // AXIOS POST format is URL, Body(data) , config - header, params,auth...
   try {
     const response = await axios.post(
-      `${ENV.authUrl}/oauth/token`,null,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        params: {
-          'grant_type': "client_credentials",
-        },
-        auth:{
-          username: ENV.clientId,
-          password: ENV.clientSecret,
-        }
-      }
+      url,
+      null,
+      config
     );
-    console.log(response.data);
+    //console.log(response.data.access_token);
+    return response.data.access_token;
   } catch (error) {
     console.error(error);
   }
 }
 
-getToken();
+async function useToken() {
+  const token = await getToken();
+  console.log(token);
+}
 
+//getToken();
+useToken();
