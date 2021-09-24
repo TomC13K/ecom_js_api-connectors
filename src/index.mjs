@@ -12,7 +12,6 @@ const ENV = {
 };
 
 async function getToken() {
-
   const url = `${ENV.authUrl}/oauth/token`;
   const config = {
     headers: {
@@ -29,11 +28,7 @@ async function getToken() {
 
   // AXIOS POST format is URL, Body(data) , config - header, params,auth...
   try {
-    const response = await axios.post(
-      url,
-      null,
-      config
-    );
+    const response = await axios.post(url, null, config);
     //console.log(response.data.access_token);
     return response.data.access_token;
   } catch (error) {
@@ -41,10 +36,33 @@ async function getToken() {
   }
 }
 
-async function useToken() {
+async function useTokenGetProducts() {
   const token = await getToken();
-  console.log(token);
+  console.log("token >> ", token);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const url = `${ENV.apiUrl}/${ENV.projectKey}/products`;
+
+  try {
+    const response = await axios.get(url, config);
+
+    //console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function productCleanup(){
+  const products = await useTokenGetProducts();
+  console.log(products);
 }
 
 //getToken();
-useToken();
+//useTokenGetProducts();
+productCleanup();
